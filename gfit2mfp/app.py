@@ -9,8 +9,8 @@ from oauth2client import tools
 
 from . import settings
 
+API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
 FIT_URL_STRING = 'https://www.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/datasets/{datasetId}'
-DEV_ID = 'me'
 
 def login():
     storage = Storage('user_credentials')
@@ -20,7 +20,7 @@ def login():
         flow = OAuth2WebServerFlow(
             settings.CLIENT_ID,
             settings.CLIENT_SECRET,
-            settings.API_SCOPE
+            API_SCOPE
         )
         # google requires me to give an argparser for flags, although I know i'll be passing none in
         parser = argparse.ArgumentParser(parents=[tools.argparser])
