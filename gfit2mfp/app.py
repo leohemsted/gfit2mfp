@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 
-import httplib2
+import httplib2, argparse
 
 from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.tools import run
+from oauth2client import tools
 
 from . import settings
 
@@ -22,7 +22,10 @@ def login():
             settings.CLIENT_SECRET,
             settings.API_SCOPE
         )
-        credentials = run(flow, storage)
+        # google requires me to give an argparser for flags, although I know i'll be passing none in
+        parser = argparse.ArgumentParser(parents=[tools.argparser])
+        flags = parser.parse_args()
+        credentials = tools.run_flow(flow, storage, flags)
 
     http = credentials.authorize(httplib2.Http())
     api = build('fitness', 'v1', http=http)
@@ -48,7 +51,3 @@ def get_fit_data():
         response = request.execute()
         import pdb
         pdb.set_trace()
-
-if __name__ == '__main__':
-    api = login()
-    get_fit_data(api)
