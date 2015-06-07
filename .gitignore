@@ -1,4 +1,4 @@
 *.py[cod]
 *.egg-info
 venv
-gfit2mfp/settings.py
+settings.py
