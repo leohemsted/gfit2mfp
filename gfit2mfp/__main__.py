@@ -1,4 +1,7 @@
-from gfit2mfp import app
+from gfit2mfp import data_collection, data_manipulation
 
-api = app.login()
-app.get_fit_data(api)
+api = data_collection.login()
+fit_data = data_collection.get_fit_data(api)
+useful_stats = data_manipulation.summarise(fit_data)
+import pdb
+pdb.set_trace()

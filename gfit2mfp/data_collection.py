@@ -1,13 +1,12 @@
-from datetime import datetime, timedelta
-
 import httplib2, argparse
+from datetime import datetime, timedelta
 
 from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
 
-from . import settings
+from gfit2mfp import settings
 
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
 FIT_URL_STRING = 'https://www.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/datasets/{datasetId}'
@@ -37,17 +36,48 @@ def get_time_range_str(start, end):
     end = int(end.timestamp() * 1e9)
     return '{s}-{e}'.format(s=start, e=end)
 
-def get_fit_data():
+def get_fit_data(api):
     end = datetime.now()
     start = end - timedelta(days=5)
-    url = FIT_URL_STRING.format(
-        userId='me',
-        dataSourceId='derived:com.google.calories.expended:com.google.android.gms:from_activities',
-        datasetId=get_time_range_str(start, end)
-    )
-    request = api.users(userId='me').dataSources().list()
 
-    while request is not None:
-        response = request.execute()
-        import pdb
-        pdb.set_trace()
+    # api.users().dataSources().list(userId='me').execute()
+
+    activity_calories = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
+
+    response = api.users().dataSources().datasets().get(
+        userId='me',
+        dataSourceId=activity_calories,
+        datasetId=get_time_range_str(start, end)
+    ).execute()
+
+    return preprocess_fit_data(response)
+
+def process_fit_datapoint(point):
+    # no idea what might trip this one up
+    if len(point['value']) != 1:
+        print(point)
+        raise NotImplementedError('can only handle one calorie value in a point')
+
+    start_ns = float(point['startTimeNanos'])
+    end_ns = float(point['endTimeNanos'])
+
+    start = datetime.fromtimestamp(start_ns / 1e9)
+    end = datetime.fromtimestamp(start_ns / 1e9)
+
+    # the calories burnt between start and end
+    return {
+        'start': start,
+        'end': end,
+        'cals': point['value'][0]['fpVal']
+    }
+
+def preprocess_fit_data(data):
+    output_data = [process_fit_datapoint(point) for point in data['point']]
+
+    global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
+    global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
+    return {
+        'start': global_start,
+        'end': global_end,
+        'data': output_data
+    }
