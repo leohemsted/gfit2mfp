@@ -2,3 +2,4 @@
 *.egg-info
 venv
 settings.py
+user_credentials
