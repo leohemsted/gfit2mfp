@@ -7,6 +7,6 @@ python:
   - "3.4"
   - "nightly"
 # command to install dependencies
-install: "pip install gfit2mfp"
+install: "pip install -e ."
 # command to run tests
-script: nosetests
+script: python setup.py test
