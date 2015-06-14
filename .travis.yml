@@ -7,7 +7,7 @@ python:
   - "nightly"
 # command to install dependencies
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install future; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install future mock; fi
   - pip install -e .
 # command to run tests
 script:
