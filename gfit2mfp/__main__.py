@@ -14,3 +14,4 @@ else:
     fit_data = data_collection.get_fit_data(api)
 
 useful_stats = data_manipulation.summarise(fit_data)
+print(useful_stats)

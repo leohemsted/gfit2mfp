@@ -6,6 +6,8 @@ python:
   - "3.4"
   - "nightly"
 # command to install dependencies
-install: "pip install -e ."
+install: pip install .
 # command to run tests
-script: python setup.py test
+script: coverage run setup.py test
+after_success:
+    coveralls

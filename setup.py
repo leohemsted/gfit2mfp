@@ -37,9 +37,9 @@ setup(
         'oauth2client>=1.4.6',
         'httplib2>=0.9.1',
     ],
-    entry_points={
-        'console_scripts': [
-            'gfit2mfp = gfit2mfp:__main__'
+    extras_require={
+        'tests': [
+            'coverage'
         ]
     },
     test_suite="tests",
