@@ -5,10 +5,8 @@ python:
   - "nightly"
 # command to install dependencies
 install:
-    - pip install .
-    - pip install coverage coveralls
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install future; fi
+  - pip install -e .
 # command to run tests
 script:
-    - coverage run --source=gfit2mfp setup.py test
-after_success:
-    coveralls --verbose
+  - python setup.py test --pytest-args=tests
