@@ -1,7 +1,14 @@
+import logging
 import json
 import os.path
 
+logging.basicConfig(
+    format='%(levelname)s: %(message)s',
+    level=logging.INFO
+)
+
 from gfit2mfp import data_collection, data_manipulation
+
 
 # test file to save hitting google each time
 fname = 'fit_data_test.json'

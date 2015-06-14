@@ -7,9 +7,9 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
 
 from gfit2mfp import settings
+from gfit2mfp.utils import DateRange
 
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
-FIT_URL_STRING = 'https://www.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/datasets/{datasetId}'
 
 def login():
     storage = Storage('user_credentials')
@@ -66,8 +66,7 @@ def process_fit_datapoint(point):
 
     # the calories burnt between start and end
     return {
-        'start': start,
-        'end': end,
+        'times': DateRange(start, end),
         'cals': point['value'][0]['fpVal']
     }
 
@@ -77,7 +76,6 @@ def preprocess_fit_data(data):
     global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
     global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
     return {
-        'start': global_start,
-        'end': global_end,
+        'times': DateRange(global_start, global_end),
         'data': output_data
     }
