@@ -7,4 +7,6 @@ python:
 install:
   - pip install -e .
 script:
-  - python setup.py test --pytest-args=tests
+  - coverage run --source=gfit2mfp setup.py test --pytest-args=tests
+after_success:
+    coveralls

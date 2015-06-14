@@ -61,6 +61,6 @@ setup(
         'oauth2client>=1.4.6',
         'httplib2>=0.9.1',
     ],
-    tests_require=['pytest'],
+    tests_require=['pbs', 'pytest', 'pytest-cov', 'coveralls'],
     cmdclass = {'test': PyTest},
 )
