@@ -15,3 +15,5 @@ else:
 
 useful_stats = data_manipulation.summarise(fit_data)
 print(useful_stats)
+grouped_session = data_manipulation.get_discrete_sessions(fit_data)
+print(grouped_session)

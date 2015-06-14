@@ -34,7 +34,3 @@ def get_discrete_sessions(fit_data):
     for data in fit_data:
         data_key = DateRange(data['start'], data['end'])
         excercise_groups.keys()
-        import pdb
-        pdb.set_trace()
-
-

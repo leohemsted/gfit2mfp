@@ -18,9 +18,12 @@ class DateRange(object):
         All three x, y and z will return True.
         '''
         if isinstance(other, DateRange):
-            return other.start <= self.end or self.start <= other.end
+            return self.start <= other.end and other.start <= self.end
         elif isinstance(other, datetime.datetime):
             return self.start <= other <= self.end
+
+    def __eq__(self, other):
+        return self.start == other.start and self.end == other.end
 
     def __repr__(self):
         return 'DateRange(start={0}, end={1})'.format(repr(self.start), repr(self.end))
