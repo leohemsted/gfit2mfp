@@ -1,6 +1,7 @@
 import itertools
 from datetime import timedelta
 
+
 def summarise(fit_data):
     '''
     Returns a dictionary containing some information summarising the entire period accounted for
@@ -20,17 +21,6 @@ def summarise(fit_data):
         'cals_per_day': cals / period.days,
         'excercise_time_per_day': excercise_time / period.days
     }
-
-
-class DateRange(object):
-    def __init__(self, start, end):
-        self.start, self.end = start, end
-
-    def __contains__(self, range):
-        return range.start < start
-
-    def __repr__(self):
-        return 'DateRange(start={0}, end={1})'.format(repr(self.start), repr(self.end))
 
 
 def get_discrete_sessions(fit_data):
