@@ -6,8 +6,8 @@ python:
   - "3.4"
 install:
   - pip install -e .
-  - pip install coverage coveralls
+  - pip install coveralls
 script:
-  - coverage run --source=gfit2mfp setup.py test --pytest-args=tests
+  - python setup.py test -a "--cov gfit2mfp tests"
 after_success:
     coveralls

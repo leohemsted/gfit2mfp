@@ -157,3 +157,7 @@ def test_date_ranges_not_near_date(start, end, other):
 
     assert not obj.near(dt.combine(date, other))
 
+@pytest.mark.parametrize('val', [d.today(), t(0), 1, '', None])
+def test_near_bad_val(val):
+    with pytest.raises(NotImplementedError):
+        DateRange(dt(2000, 1,1), dt(2000, 1, 2)).near(val)
