@@ -2,18 +2,12 @@ from datetime import datetime as dt
 
 import pytest
 
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # python 2.x compatibility
-    from mock import Mock
-
 from gfit2mfp.utils import DateRange
 
 
 def test_create_date_range():
-    s = Mock()
-    e = Mock()
+    s = 1
+    e = 2
     obj = DateRange(s, e)
 
     assert obj.start == s
@@ -86,7 +80,7 @@ def test_date_ranges_not_contains_date(start, end, other):
     assert other not in obj
 
 def test_date_ranges_equal_dt():
-    obj = DateRange(dt(2000, 1, 5), dt(2000, 1, 5))
-    other = DateRange(dt(2000, 1, 5), dt(2000, 1, 5))
+    obj = DateRange(dt(2000, 1, 5), dt(2000, 1, 10))
+    other = DateRange(dt(2000, 1, 5), dt(2000, 1, 10))
 
     assert obj == other

@@ -17,6 +17,17 @@ class DateRange(object):
     def duration(self):
         return self.end - self.start
 
+    def near(self, other):
+        '''
+        Similar to contains, but returns if they are within five minutes of each other
+        '''
+        # if they're actually intersecting then we can shortcut
+        if other in self:
+            return True
+        else:
+            start_diff = self.start - other.start
+            end_diff = self.end - other.end
+
     def __contains__(self, other):
         '''
         `x in my_date_range` will return true if `x` intersects the date range. If x is a datetime
