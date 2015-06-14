@@ -1,7 +1,12 @@
 from datetime import datetime
 
 import pytest
-from unittest.mock import Mock
+
+try:
+    from unittest.mock import Mock
+except ImportError:
+    # python 2.x compatibility
+    from mock import Mock
 
 from gfit2mfp.utils import DateRange
 
