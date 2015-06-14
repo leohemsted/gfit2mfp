@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/leohemsted/gfit2mfp.svg?branch=master)](https://travis-ci.org/leohemsted/gfit2mfp)
+
 gfit2mfp - Google Fit -> My Fitness Pal
 =======================================
 
