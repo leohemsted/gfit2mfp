@@ -1,6 +1,8 @@
 import datetime
 
 class DateRange(object):
+    near_time = datetime.timedelta(seconds=5*60)
+
     def __init__(self, start, end):
         assert start < end
         self._start, self._end = start, end
@@ -21,12 +23,10 @@ class DateRange(object):
         '''
         Similar to contains, but returns if they are within five minutes of each other
         '''
-        # if they're actually intersecting then we can shortcut
-        if other in self:
-            return True
-        else:
-            start_diff = self.start - other.start
-            end_diff = self.end - other.end
+        # create a copy with 5 minutes on either side
+        wider_reach_date = DateRange(self.start - self.near_time, self.end + self.near_time)
+        return other in wider_reach_date
+
 
     def __contains__(self, other):
         '''
@@ -45,6 +45,8 @@ class DateRange(object):
             return self.start <= other.end and other.start <= self.end
         elif isinstance(other, datetime.datetime):
             return self.start <= other <= self.end
+        else:
+            raise NotImplementedError('Cannot compare DateRange and {0}'.format(type(other)))
 
     def __lt__(self, other):
         '''
