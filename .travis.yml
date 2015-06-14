@@ -6,8 +6,11 @@ python:
   - "3.4"
   - "nightly"
 # command to install dependencies
-install: pip install .
+install:
+    - pip install .
+    - pip install coverage coveralls
 # command to run tests
-script: coverage run setup.py test
+script:
+    - coverage run --source=gfit2mfp setup.py test
 after_success:
-    coveralls
+    coveralls --verbose
