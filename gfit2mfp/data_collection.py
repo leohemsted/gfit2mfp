@@ -42,11 +42,11 @@ def get_fit_data(api):
 
     # api.users().dataSources().list(userId='me').execute()
 
-    activity_calories = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
+    cal_datasource = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
 
     response = api.users().dataSources().datasets().get(
         userId='me',
-        dataSourceId=activity_calories,
+        dataSourceId=cal_datasource,
         datasetId=get_time_range_str(start, end)
     ).execute()
 
@@ -62,7 +62,7 @@ def process_fit_datapoint(point):
     end_ns = float(point['endTimeNanos'])
 
     start = datetime.fromtimestamp(start_ns / 1e9)
-    end = datetime.fromtimestamp(start_ns / 1e9)
+    end = datetime.fromtimestamp(end_ns / 1e9)
 
     # the calories burnt between start and end
     return {

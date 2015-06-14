@@ -30,7 +30,7 @@ class DateRange(object):
         return range.start < start
 
     def __repr__(self):
-        return 'DateRange(start={0}, end={1})'.format(self.start, self.end)
+        return 'DateRange(start={0}, end={1})'.format(repr(self.start), repr(self.end))
 
 
 def get_discrete_sessions(fit_data):
@@ -41,11 +41,10 @@ def get_discrete_sessions(fit_data):
 
     excercise_groups = {}
 
-    DateRange = namedtuple('DateRange', ['start', 'end'])
-
     for data in fit_data:
         data_key = DateRange(data['start'], data['end'])
         excercise_groups.keys()
-        if data not in excercise_groups:
-            excercise_groups(data)
-        else:
+        import pdb
+        pdb.set_trace()
+
+
