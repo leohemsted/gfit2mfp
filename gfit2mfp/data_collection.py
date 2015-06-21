@@ -1,4 +1,5 @@
-import httplib2, argparse
+import httplib2
+import argparse
 from datetime import datetime, timedelta
 
 from googleapiclient.discovery import build
@@ -10,6 +11,7 @@ from gfit2mfp import settings
 from gfit2mfp.utils import DateRange
 
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
+
 
 def login():
     storage = Storage('user_credentials')
@@ -30,11 +32,13 @@ def login():
     api = build('fitness', 'v1', http=http)
     return api
 
+
 def get_time_range_str(start, end):
     # google accepts timestamps in nanoseconds
     start = int(start.timestamp() * 1e9)
     end = int(end.timestamp() * 1e9)
     return '{s}-{e}'.format(s=start, e=end)
+
 
 def get_fit_data(api):
     end = datetime.now()
@@ -51,6 +55,7 @@ def get_fit_data(api):
     ).execute()
 
     return preprocess_fit_data(response)
+
 
 def process_fit_datapoint(point):
     # no idea what might trip this one up
@@ -69,6 +74,7 @@ def process_fit_datapoint(point):
         'times': DateRange(start, end),
         'cals': point['value'][0]['fpVal']
     }
+
 
 def preprocess_fit_data(data):
     output_data = [process_fit_datapoint(point) for point in data['point']]
