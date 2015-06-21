@@ -7,7 +7,6 @@ Google Fit -> My Fitness Pal
 
 A script that pulls your google fit data and adds it to your myfitnesspal account
 '''
-
 class PyTest(TestCommand):
     '''
     See https://pytest.org/latest/goodpractises.html#integration-with-setuptools-test-commands
@@ -28,7 +27,6 @@ class PyTest(TestCommand):
         import pytest, sys
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
-
 
 
 setup(
@@ -61,6 +59,9 @@ setup(
         'oauth2client>=1.4.6',
         'httplib2>=0.9.1',
     ],
-    tests_require=['pytest', 'pytest-cov'],
+    tests_require=[
+        'pytest',
+        'pytest-cov'
+    ],
     cmdclass = {'test': PyTest},
 )

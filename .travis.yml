@@ -8,6 +8,6 @@ install:
   - pip install -e .
   - pip install coveralls
 script:
-  - python setup.py test -a "--cov gfit2mfp tests"
+  - python setup.py test -a "--cov gfit2mfp"
 after_success:
     coveralls
