@@ -23,6 +23,6 @@ The important ones:
 Todo:
 =====
 
-Work out if there's a convenient way to get all activity - not just by device. what happens if i get a smart watch or brick my phone? What's the difference between `session_activity_segment` and `platform_activity_segment`
+Work out if there's a convenient way to get all activity - not just by device. what happens if i get a smart watch or brick my phone? Look at `derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments`
 
 match activity to calories before grouping the timesets - discard anything without an activity (though probably at least print out cals so I can see how much is there and work out if I want to do anything with it) - also sleepdroid reports my sleeping to google fit - creepy - probs don't want that popping up anywhere
