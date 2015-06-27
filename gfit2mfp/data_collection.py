@@ -40,28 +40,34 @@ def get_time_range_str(start, end):
     return '{s}-{e}'.format(s=start, e=end)
 
 
-def get_fit_data(api):
+def _get_fit_data(api, data_source, data_type):
     end = datetime.now()
     start = end - timedelta(days=5)
 
-    # api.users().dataSources().list(userId='me').execute()
-
-    cal_datasource = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
-
     response = api.users().dataSources().datasets().get(
         userId='me',
-        dataSourceId=cal_datasource,
+        dataSourceId=data_source,
         datasetId=get_time_range_str(start, end)
     ).execute()
 
-    return preprocess_fit_data(response)
+    return preprocess_data(response, data_type)
 
 
-def process_fit_datapoint(point):
+def get_cal_data(api):
+    data = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
+    return _get_fit_data(api, data_source=data, data_type='fpVal')
+
+
+def get_activity_data(api):
+    data = 'derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments'
+    return _get_fit_data(api, data_source=data, data_type='intVal')
+
+
+def process_datapoint(point, data_type):
     # no idea what might trip this one up
     if len(point['value']) != 1:
         print(point)
-        raise NotImplementedError('can only handle one calorie value in a point')
+        raise NotImplementedError('can only handle one value in a point')
 
     start_ns = float(point['startTimeNanos'])
     end_ns = float(point['endTimeNanos'])
@@ -72,16 +78,14 @@ def process_fit_datapoint(point):
     # the calories burnt between start and end
     return {
         'times': DateRange(start, end),
-        'cals': point['value'][0]['fpVal']
+        'value': point['value'][0][data_type]
     }
 
 
-def preprocess_fit_data(data):
-    output_data = [process_fit_datapoint(point) for point in data['point']]
-
+def preprocess_data(data, data_type):
     global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
     global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
     return {
         'times': DateRange(global_start, global_end),
-        'data': output_data
+        'data': [process_datapoint(point, data_type) for point in data['point']]
     }

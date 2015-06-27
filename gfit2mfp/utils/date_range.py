@@ -70,4 +70,17 @@ class DateRange(object):
         return 'DateRange s={0} d={1}'.format(self.start, trimmed_duration)
 
     def __repr__(self):
-        return 'DateRange(start={0}, end={1})'.format(repr(self.start), repr(self.end))
+        return '{cls}(start={s!r}, end={e!r})'.format(
+            cls=self.__class__.__name__,
+            s=self.start,
+            e=self.end
+        )
+
+    def combine(self, other):
+        '''
+        Return a new DateRange that encompasses both this DateRange and the Other
+        '''
+        return DateRange(
+            start=min(self.start, other.start),
+            end=max(self.end, other.end)
+        )

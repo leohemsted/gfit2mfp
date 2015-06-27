@@ -1,4 +1,5 @@
 import logging
+from operator import itemgetter
 from datetime import timedelta
 
 from gfit2mfp.utils import DateRange
@@ -9,28 +10,28 @@ def summarise(fit_data):
     '''
     Returns a dictionary containing some information summarising the entire period accounted for
     '''
-    excercise_time = sum((d['end'] - d['start'] for d in fit_data['data']), timedelta())
-    cals = sum(d['cals'] for d in fit_data['data'])
-    period = fit_data['end'] - fit_data['start']
+    excercise_time = sum((d['times'].duration for d in fit_data['data']), timedelta())
+    cals = sum(d['value'] for d in fit_data['data'])
+
+    period = fit_data['times']
 
     return {
-        'start': fit_data['start'],
-        'end': fit_data['end'],
-        'period_length': period,
+        'start': period.start,
+        'end': period.end,
+        'period_length': period.duration,
 
         'total_excercise_time': excercise_time,
         'total_cals': cals,
 
-        'cals_per_day': cals / period.days,
-        'excercise_time_per_day': excercise_time / period.days
+        'cals_per_day': cals / period.duration.days,
+        'excercise_time_per_day': excercise_time / period.duration.days
     }
 
 
 def merge_data(a, b):
     return {
-        'start': min(a['start'], b['start']),
-        'end': max(a['end'], b['end']),
-        'cals': a['cals'] + b['cals']
+        'times': a['times'].combine(b['times']),
+        'value': a['value'] + b['value']
     }
 
 
@@ -42,7 +43,7 @@ def get_discrete_sessions(fit_data):
     excercise_groups = {}
 
     for data in fit_data['data']:
-        data_key = DateRange(data['start'], data['end'])
+        data_key = data['times']
         #
         for group in excercise_groups.keys():
             if data_key in group:
@@ -50,7 +51,7 @@ def get_discrete_sessions(fit_data):
                 # remove old one from list and combine with the new data point
                 existing_data = excercise_groups.pop(group)
                 data = merge_data(existing_data, data)
-                data_key = DateRange(data['start'], data['end'])
+                data_key = data['times']
                 break
 
         excercise_groups[data_key] = data
@@ -62,8 +63,11 @@ def get_discrete_sessions(fit_data):
     )
 
     # make sure we didn't miss any rows
-    assert sum(x['cals'] for x in fit_data['data']) == \
-        sum(x['cals'] for x in excercise_groups.values())
+    assert sum(x['value'] for x in fit_data['data']) == \
+        sum(x['value'] for x in excercise_groups.values())
 
     # sort by start date and return
-    return sorted(excercise_groups.values(), key=lambda x: DateRange(x['start'], x['end']))
+    return sorted(
+        excercise_groups.values(),
+        key=itemgetter('times')
+    )
