@@ -27,5 +27,7 @@ else:
 
 useful_stats = data_manipulation.summarise(cal_data)
 print(useful_stats)
-grouped_session = data_manipulation.get_discrete_sessions(cal_data)
-print(grouped_session)
+
+fitness_data = data_manipulation.combine_activities(cal_data, act_data)
+import pdb
+pdb.set_trace()
