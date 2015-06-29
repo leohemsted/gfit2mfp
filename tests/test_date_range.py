@@ -1,4 +1,4 @@
-from datetime import datetime as dt, date as d, time as t
+from datetime import datetime as dt, date as d, time as t, timedelta as td
 
 import pytest
 
@@ -108,6 +108,7 @@ def test_date_ranges_near(start, end, other_start, other_end):
     obj = DateRange(dt.combine(date, start), dt.combine(date, end))
     other = DateRange(dt.combine(date, other_start), dt.combine(date, other_end))
 
+    obj.near_time = td(seconds=300)
     assert obj.near(other)
 
 @pytest.mark.parametrize(
@@ -124,6 +125,7 @@ def test_date_ranges_arent_near(start, end, other_start, other_end):
     obj = DateRange(dt.combine(date, start), dt.combine(date, end))
     other = DateRange(dt.combine(date, other_start), dt.combine(date, other_end))
 
+    obj.near_time = td(seconds=300)
     assert not obj.near(other)
 
 
@@ -140,6 +142,7 @@ def test_date_ranges_near_date(start, end, other):
     date = d(2000, 1, 5)
     obj = DateRange(dt.combine(date, start), dt.combine(date, end))
 
+    obj.near_time = td(seconds=300)
     assert obj.near(dt.combine(date, other))
 
 @pytest.mark.parametrize(
@@ -155,9 +158,10 @@ def test_date_ranges_not_near_date(start, end, other):
     date = d(2000, 1, 5)
     obj = DateRange(dt.combine(date, start), dt.combine(date, end))
 
+    obj.near_time = td(seconds=300)
     assert not obj.near(dt.combine(date, other))
 
 @pytest.mark.parametrize('val', [d.today(), t(0), 1, '', None])
 def test_near_bad_val(val):
     with pytest.raises(NotImplementedError):
-        DateRange(dt(2000, 1,1), dt(2000, 1, 2)).near(val)
+        DateRange(dt(2000, 1, 1), dt(2000, 1, 2)).near(val)

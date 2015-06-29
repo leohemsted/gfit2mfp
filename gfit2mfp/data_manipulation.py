@@ -69,9 +69,10 @@ def compress_data(fit_data):
     '''
     # steps:
     # take item off of fit_data
+    # merge it with whatever is near
     # if it isn't near anything in compressed dict add it
-    # else merge it with whatever is near
     # what if it is near two? - do we repeat until it doesn't stop changing size?
 
     compressed_dict = {}
+
     return fit_data
