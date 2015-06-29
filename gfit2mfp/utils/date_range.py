@@ -1,7 +1,7 @@
 import datetime
 
 class DateRange(object):
-    near_time = datetime.timedelta(seconds=5*60)
+    near_time = datetime.timedelta(seconds=10*60)
 
     def __init__(self, start, end):
         assert start < end
@@ -21,7 +21,7 @@ class DateRange(object):
 
     def near(self, other):
         '''
-        Similar to contains, but returns if they are within five minutes of each other
+        Similar to contains, but returns if they are within ten minutes of each other
         '''
         # create a copy with 5 minutes on either side
         wider_reach_date = DateRange(self.start - self.near_time, self.end + self.near_time)

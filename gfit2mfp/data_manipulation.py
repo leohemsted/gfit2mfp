@@ -57,46 +57,21 @@ def combine_activities(cal_data, act_data):
 
 def merge_data(a, b):
     return {
-        'times': a['times'].combine(b['times']),
         'cals': a['cals'] + b['cals'],
         'activity': a['activity']
     }
 
 
-# def get_discrete_sessions(fit_data):
-#     '''
-#     Returns a dictionary of times with discrete sessions. If two data points have start and end
-#     times that overlap, this combines them
-#     '''
-#     exercise_sessions = {}
+def compress_data(fit_data):
+    '''
+    Returns only discrete sessions. If two data points are of matching activity type and have start
+    and end times that overlap, this combines them.
+    '''
+    # steps:
+    # take item off of fit_data
+    # if it isn't near anything in compressed dict add it
+    # else merge it with whatever is near
+    # what if it is near two? - do we repeat until it doesn't stop changing size?
 
-#     for data in fit_data['data']:
-#         data_key = data['times']
-#         #
-#         for group in exercise_sessions.keys():
-#             if data_key in group:
-#                 if exercise['activity'] != data['activity']:
-#                     logger.warning(exercise[])
-#                 else
-#                     logger.debug('data intersects: %s in %s', data_key, group)
-#                     # remove old one from list and combine with the new data point
-#                     existing_data = exercise_sessions.pop(group)
-
-#                     data = merge_data(existing_data, data)
-#                     data_key = data['times']
-#                     break
-
-#         exercise_sessions[data_key] = data
-
-#     logger.info(
-#         'Compressed data down from %i to %i data points',
-#         len(fit_data['data']),
-#         len(exercise_sessions)
-#     )
-
-#     # make sure we didn't miss any rows
-#     assert sum(x['value'] for x in fit_data['data']) == \
-#         sum(x['value'] for x in exercise_sessions.values())
-
-#     # sort by start date and return
-#     return exercise_sessions
+    compressed_dict = {}
+    return fit_data

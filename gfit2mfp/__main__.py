@@ -29,5 +29,7 @@ useful_stats = data_manipulation.summarise(cal_data)
 print(useful_stats)
 
 fitness_data = data_manipulation.combine_activities(cal_data, act_data)
+
+compressed = data_manipulation.compress_data(fitness_data)
 import pdb
 pdb.set_trace()
