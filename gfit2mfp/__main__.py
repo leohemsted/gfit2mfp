@@ -9,7 +9,6 @@ logging.basicConfig(
 
 from gfit2mfp import data_collection, data_manipulation
 
-
 # test file to save hitting google each time
 cals = 'cal_data.json'
 acts = 'activity_data.json'
@@ -30,6 +29,6 @@ print(useful_stats)
 
 fitness_data = data_manipulation.combine_activities(cal_data, act_data)
 
-compressed = data_manipulation.compress_data(fitness_data)
+day_data = data_manipulation.get_daily_summary(fitness_data)
 import pdb
 pdb.set_trace()

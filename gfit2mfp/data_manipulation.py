@@ -1,8 +1,7 @@
 import logging
-from operator import itemgetter
 from datetime import timedelta
+from collections import defaultdict
 
-from gfit2mfp.utils import DateRange
 from gfit2mfp.utils import Activity
 
 logger = logging.getLogger(__name__)
@@ -40,7 +39,6 @@ def combine_activities(cal_data, act_data):
     intersect = cal_times & act_times
     inverse = cal_times ^ act_times
 
-
     # check that we didn't have too many unmatched items (10% of total count)
     if len(inverse) > 0.1 * len(cal_times):
         logger.warning(
@@ -62,10 +60,14 @@ def merge_data(a, b):
     }
 
 
-def compress_data(fit_data):
+def get_daily_summary(fit_data):
     '''
-    Returns only discrete sessions. If two data points are of matching activity type and have start
+    Returns daily activity summaries. If two data points are of matching activity type and have start
     and end times that overlap, this combines them.
+    Return dict looks like:
+    {
+        datetime.date: {gfit2mfp.Activity: {'duration': datetime.timedelta, 'cals': int}}
+    }
     '''
     # steps:
     # take item off of fit_data
@@ -73,6 +75,11 @@ def compress_data(fit_data):
     # if it isn't near anything in compressed dict add it
     # what if it is near two? - do we repeat until it doesn't stop changing size?
 
-    compressed_dict = {}
+    day_dict = defaultdict(lambda: defaultdict(lambda: {'duration': timedelta(), 'cals': 0}))
+    for time in fit_data:
+        data = fit_data[time]
+        excercise_for_day = day_dict[time.start.date()][data['activity']]
+        excercise_for_day['duration'] += time.duration
+        excercise_for_day['cals'] += data['cals']
 
-    return fit_data
+    return day_dict
