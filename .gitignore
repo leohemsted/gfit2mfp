@@ -1,9 +1,14 @@
+# python internals
 *.py[cod]
 *.egg-info
 .eggs
 venv
-settings.py
-user_credentials
+
+# test files
 .coverage
 
+# gfit2mfp internals
+user_credentials
+settings.py
+last_run.txt
 error.html

@@ -1,6 +1,6 @@
 import httplib2
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from googleapiclient.discovery import build
 from oauth2client.file import Storage
@@ -12,10 +12,7 @@ from gfit2mfp.utils import DateRange
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
 
 class GfitAPI(object):
-    def __init__(self, client_id, client_secret, start=None):
-        if start is None:
-            start = datetime.now() - timedelta(days=5)
-
+    def __init__(self, client_id, client_secret, start):
         self.start = start
         self.api = None
         self.client_id = client_id
@@ -35,9 +32,9 @@ class GfitAPI(object):
     def login(self):
         # code liberated from https://cloud.google.com/appengine/docs/python/endpoints/access_from_python
         storage = Storage('user_credentials')
-        credentials = storage.get()
+        self.credentials = storage.get()
 
-        if credentials is None or credentials.invalid:
+        if self.credentials is None or self.credentials.invalid:
             flow = OAuth2WebServerFlow(
                 self.client_id,
                 self.client_secret,
@@ -98,11 +95,11 @@ class GfitAPI(object):
             'times': DateRange(global_start, global_end),
             'data': [self.process_datapoint(point, data_type) for point in data['point']]
         }
-        
+
 
     @staticmethod
     def get_time_range_str(start, end):
-    # google accepts timestamps in nanoseconds
-    start = int(start.timestamp() * 1e9)
-    end = int(end.timestamp() * 1e9)
-    return '{s}-{e}'.format(s=start, e=end)
+        # google accepts timestamps in nanoseconds
+        start = int(start.timestamp() * 1e9)
+        end = int(end.timestamp() * 1e9)
+        return '{s}-{e}'.format(s=start, e=end)

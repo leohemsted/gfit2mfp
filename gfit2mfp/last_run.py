@@ -1,11 +1,25 @@
+import os
+
 import arrow
+
+FILENAME = 'last_run.txt'
+
+def retrieve_last_run():
+    """
+    Gets the previous timestamp from the last_run file. Creates the file if it doesn't exist.
+    """
+    if not os.path.isfile(FILENAME):
+        return update_last_run()
+    else:
+        with open(FILENAME, 'r') as last_run:
+            return arrow.get(last_run.read()).datetime
 
 def update_last_run():
     """
-    Retrieves the last
+    Stores the current timestamp in the last_run file. Creates the file if it doesn't exist.
     """
-    with open('last_run.txt', 'r') as last_run:
-        old_timestamp = arrow.get(last_run.read())
-        last_run.truncate()
-        last_run.write(arrow.now().isoformat())
-        return old_timestamp.date
+    # append+ so it creates if it doesn't exist
+    with open(FILENAME, 'w+') as last_run:
+        timestamp = arrow.utcnow()
+        last_run.write(timestamp.isoformat())
+        return timestamp.datetime
