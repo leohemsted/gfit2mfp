@@ -206,3 +206,7 @@ def test_lt(left, right, less_than):
 )
 def test_combine(left, right, new):
     assert left.combine(right) == new
+
+
+def test_duration():
+    assert DateRange(4, 6).duration == 2

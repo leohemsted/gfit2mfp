@@ -64,7 +64,8 @@ class DateRange(object):
     def __eq__(self, other):
         return self.start == other.start and self.end == other.end
 
-    def __str__(self):
+    # don't bother testing str and repr - they're boring functions
+    def __str__(self): # pragma: no cover
         # trim the microseconds from timedelta - no-one cares about those anyway!
         trimmed_duration = datetime.timedelta(seconds=int(self.duration.total_seconds()))
         return 'DateRange s={0} d={1}'.format(self.start, trimmed_duration)
