@@ -55,10 +55,10 @@ class MFP(object):
             'authenticity_token':self.csrf,
             'calorie_multiplier':1.0,
             'search':activity.name,
-            # todo: figure out what this represents
-            'exercise_entry[exercise_id]':26688321,
+            'exercise_entry[exercise_id]':activity.mfp_id,
             'exercise_entry[date]':str(date),
-            'exercise_entry[exercise_type]':activity.mfp_id,
+            # todo: figure out what this represents
+            'exercise_entry[exercise_type]':0,
             'exercise_entry[quantity]':duration.seconds / 60,
             'exercise_entry[calories]':cals,
         }
@@ -70,4 +70,9 @@ class MFP(object):
             duration.seconds / 60
         )
         res = self.client.post(self.add_exercise_url, data=payload)
-        logging.info(res)
+        import pdb; pdb.set_trace()
+
+        if re.search('Please correct the following errors', res.text):
+            with open('error.html', 'w', encoding='utf-8') as err:
+                err.write(res.text)
+            raise ValueError('MyFitnessPal did not return 302. Error page saved to \'error.html\'')

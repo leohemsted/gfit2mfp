@@ -134,6 +134,7 @@ class Activity(Enum):
         if self == Activity.biking:
             return 19
         elif self == Activity.walking:
+            # Walking, 12.5 mins per km, mod. pace
             return 26688321
         elif self == Activity.running:
             return 132

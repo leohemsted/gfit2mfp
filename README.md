@@ -23,9 +23,8 @@ The important ones:
 Todo:
 =====
 
-* Make sure login works
-* get posting of activities working
-* Figure out what exercise_id means in mfp
-* is regex the best way to get the csrf? it'll probably fall over if there's a weird line break or something. look into beautifulsoup
+* is regex the best way to get the csrf? it'll probably fall over if there's a weird line break or something. look into beautifulsoup?
+* same for error handling (div class/id = "errorExplanation")
 * get list of activity IDs
-* make the type of activity configurable in the settings file
+** make the type of activity configurable in the settings file
+* store when last run, and only get gfit data since then
