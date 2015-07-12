@@ -1,4 +1,9 @@
-from unittest.mock import Mock, patch, call
+import sys
+# monkeypatch unittest for py2.7
+if sys.version_info < (3, 0, 0):
+    from mock import Mock, patch, call
+else:
+    from unittest.mock import Mock, patch, call
 
 import pytest
 
@@ -28,7 +33,7 @@ def test_preprocess_data_correct_daterange(proc_datapoint, daterange, datetime):
 @patch('gfit2mfp.data_collection.datetime')
 @patch('gfit2mfp.data_collection.DateRange')
 @patch.object(GfitAPI, 'process_datapoint')
-def test_preprocess_data(proc_datapoint, daterange, datetime):
+def test_preprocess_data_calls_datapoint(proc_datapoint, daterange, datetime):
     data = {
         'minStartTimeNs': 1,
         'maxEndTimeNs': 1,
