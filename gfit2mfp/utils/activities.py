@@ -137,6 +137,7 @@ class Activity(Enum):
             # Walking, 12.5 mins per km, mod. pace
             return 26688321
         elif self == Activity.running:
-            return 132
+            # Running (jogging), 10.7 kph (5.6 min per km)
+            return 127
         else:
             raise NotImplementedError('We do not know the myfitnesspal ID for {0}'.format(self))

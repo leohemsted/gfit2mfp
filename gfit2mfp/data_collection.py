@@ -7,85 +7,102 @@ from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
 
-from gfit2mfp import settings
 from gfit2mfp.utils import DateRange
 
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
 
+class GfitAPI(object):
+    def __init__(self, client_id, client_secret, start=None):
+        if start is None:
+            start = datetime.now() - timedelta(days=5)
 
-def login():
-    storage = Storage('user_credentials')
-    credentials = storage.get()
+        self.start = start
+        self.api = None
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.credentials = None
+        super().__init__()
 
-    if credentials is None or credentials.invalid:
-        flow = OAuth2WebServerFlow(
-            settings.CLIENT_ID,
-            settings.CLIENT_SECRET,
-            API_SCOPE
-        )
-        # google requires me to give an argparser for flags, although I know i'll be passing none in
-        parser = argparse.ArgumentParser(parents=[tools.argparser])
-        flags = parser.parse_args()
-        credentials = tools.run_flow(flow, storage, flags)
+    def __enter__(self):
+        self.login()
+        return self
 
-    http = credentials.authorize(httplib2.Http())
-    api = build('fitness', 'v1', http=http)
-    return api
+    def __exit__(self, exc_type, exc_val, traceback):
+        # not sure if I want to revoke - i might remove this later
+        if self.credentials:
+            self.credentials.revoke()
+
+    def login(self):
+        # code liberated from https://cloud.google.com/appengine/docs/python/endpoints/access_from_python
+        storage = Storage('user_credentials')
+        credentials = storage.get()
+
+        if credentials is None or credentials.invalid:
+            flow = OAuth2WebServerFlow(
+                self.client_id,
+                self.client_secret,
+                API_SCOPE
+            )
+            # google requires me to give an argparser for flags, although I know i'll be passing none in
+            parser = argparse.ArgumentParser(parents=[tools.argparser])
+            flags = parser.parse_args()
+            self.credentials = tools.run_flow(flow, storage, flags)
+
+        http = self.credentials.authorize(httplib2.Http())
+        self.api = build('fitness', 'v1', http=http)
 
 
-def get_time_range_str(start, end):
+    def _get_fit_data(self, data_source, data_type):
+        response = self.api.users().dataSources().datasets().get(
+            userId='me',
+            dataSourceId=data_source,
+            datasetId=self.get_time_range_str(self.start, datetime.now())
+        ).execute()
+
+        return self.preprocess_data(response, data_type)
+
+
+    def get_cal_data(self):
+        data = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
+        return self._get_fit_data(data_source=data, data_type='fpVal')
+
+
+    def get_activity_data(self):
+        data = 'derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments'
+        return self._get_fit_data(data_source=data, data_type='intVal')
+
+
+    def process_datapoint(self, point, data_type):
+        # no idea what might trip this one up
+        if len(point['value']) != 1:
+            print(point)
+            raise NotImplementedError('can only handle one value in a point')
+
+        start_ns = float(point['startTimeNanos'])
+        end_ns = float(point['endTimeNanos'])
+
+        start = datetime.fromtimestamp(start_ns / 1e9)
+        end = datetime.fromtimestamp(end_ns / 1e9)
+
+        # the calories burnt between start and end
+        return {
+            'times': DateRange(start, end),
+            'value': point['value'][0][data_type]
+        }
+
+
+    def preprocess_data(self, data, data_type):
+        global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
+        global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
+        return {
+            'times': DateRange(global_start, global_end),
+            'data': [self.process_datapoint(point, data_type) for point in data['point']]
+        }
+        
+
+    @staticmethod
+    def get_time_range_str(start, end):
     # google accepts timestamps in nanoseconds
     start = int(start.timestamp() * 1e9)
     end = int(end.timestamp() * 1e9)
     return '{s}-{e}'.format(s=start, e=end)
-
-
-def _get_fit_data(api, data_source, data_type):
-    end = datetime.now()
-    start = end - timedelta(days=5)
-
-    response = api.users().dataSources().datasets().get(
-        userId='me',
-        dataSourceId=data_source,
-        datasetId=get_time_range_str(start, end)
-    ).execute()
-
-    return preprocess_data(response, data_type)
-
-
-def get_cal_data(api):
-    data = 'derived:com.google.calories.expended:com.google.android.gms:from_activities'
-    return _get_fit_data(api, data_source=data, data_type='fpVal')
-
-
-def get_activity_data(api):
-    data = 'derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments'
-    return _get_fit_data(api, data_source=data, data_type='intVal')
-
-
-def process_datapoint(point, data_type):
-    # no idea what might trip this one up
-    if len(point['value']) != 1:
-        print(point)
-        raise NotImplementedError('can only handle one value in a point')
-
-    start_ns = float(point['startTimeNanos'])
-    end_ns = float(point['endTimeNanos'])
-
-    start = datetime.fromtimestamp(start_ns / 1e9)
-    end = datetime.fromtimestamp(end_ns / 1e9)
-
-    # the calories burnt between start and end
-    return {
-        'times': DateRange(start, end),
-        'value': point['value'][0][data_type]
-    }
-
-
-def preprocess_data(data, data_type):
-    global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
-    global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
-    return {
-        'times': DateRange(global_start, global_end),
-        'data': [process_datapoint(point, data_type) for point in data['point']]
-    }

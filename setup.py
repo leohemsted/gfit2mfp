@@ -55,7 +55,8 @@ setup(
         'google-api-python-client>=1.4.0',
         'oauth2client>=1.4.6',
         'httplib2>=0.9.1',
-        'enum34'
+        'enum34',
+        'arrow'
     ],
     tests_require=[
         'pytest',
