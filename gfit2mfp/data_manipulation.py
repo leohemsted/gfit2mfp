@@ -23,8 +23,9 @@ def summarise(fit_data):
         'total_exercise_time': exercise_time,
         'total_cals': cals,
 
-        'cals_per_day': cals / period.duration.days,
-        'exercise_time_per_day': exercise_time / period.duration.days
+        # add one to always round up number of days to prevent division by zero
+        'cals_per_day': cals / (period.duration.total_seconds() / 60 / 60 / 24),
+        'exercise_time_per_day': exercise_time / (period.duration.total_seconds() / 60 / 60 / 24)
     }
 
 
