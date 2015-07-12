@@ -191,3 +191,18 @@ def test_near_bad_val(val):
 )
 def test_lt(left, right, less_than):
     assert (left < right) == less_than
+
+@pytest.mark.parametrize('left, right, new',
+    [
+        # equal makes equal
+        (DateRange(1, 2), DateRange(1, 2), DateRange(1, 2)),
+        # no intersect
+        (DateRange(1, 2), DateRange(4, 5), DateRange(1, 5)),
+        (DateRange(4, 5), DateRange(1, 2), DateRange(1, 5)),
+        # part-overlap
+        (DateRange(1, 3), DateRange(2, 4), DateRange(1, 4)),
+        (DateRange(2, 4), DateRange(1, 3), DateRange(1, 4)),
+    ]
+)
+def test_combine(left, right, new):
+    assert left.combine(right) == new
