@@ -165,3 +165,29 @@ def test_date_ranges_not_near_date(start, end, other):
 def test_near_bad_val(val):
     with pytest.raises(NotImplementedError):
         DateRange(dt(2000, 1, 1), dt(2000, 1, 2)).near(val)
+
+
+@pytest.mark.parametrize('left, right, less_than',
+    [
+        # same start, same end
+        (DateRange(2, 4), DateRange(2, 4), False),
+        # same start, l ends before r
+        (DateRange(2, 4), DateRange(2, 5), True),
+        # same start, l ends after r
+        (DateRange(2, 4), DateRange(2, 3), False),
+        # l starts before r, same end
+        (DateRange(1, 4), DateRange(2, 4), True),
+        # l starts before r, l ends after r
+        (DateRange(1, 5), DateRange(2, 4), True),
+        # l starts before r, l ends before r
+        (DateRange(1, 3), DateRange(2, 4), True),
+        # l starts after r, same end
+        (DateRange(3, 4), DateRange(2, 4), False),
+        # l starts after r, l ends after r
+        (DateRange(3, 5), DateRange(2, 4), False),
+        # l starts after r, l ends before r
+        (DateRange(3, 4), DateRange(2, 5), False),
+    ]
+)
+def test_lt(left, right, less_than):
+    assert (left < right) == less_than
