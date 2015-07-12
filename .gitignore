@@ -1,5 +1,6 @@
 # python internals
 *.py[cod]
+*__pycache__*
 *.egg-info
 .eggs
 venv

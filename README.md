@@ -27,5 +27,4 @@ Todo:
 * same for error handling (div class/id = "errorExplanation")
 * get list of activity IDs
 ** make the type of activity configurable in the settings file
-* store when last run, and only get gfit data since then
-* Set up auth properly so I can run this on a server - see https://cloud.google.com/appengine/docs/python/endpoints/auth#Creating_a_web_client_ID
+* Set up client auth tokens properly so I can run this on a server - see https://cloud.google.com/appengine/docs/python/endpoints/auth#Creating_a_web_client_ID
