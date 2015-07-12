@@ -18,6 +18,7 @@ class GfitAPI(object):
         self.client_id = client_id
         self.client_secret = client_secret
         self.credentials = None
+        self.authed_http = None
         super().__init__()
 
     def __enter__(self):
@@ -25,9 +26,10 @@ class GfitAPI(object):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
-        # not sure if I want to revoke - i might remove this later
-        if self.credentials:
-            self.credentials.revoke()
+        pass
+        # not sure if I ever want to revoke - i might re-add this later?
+        # if self.credentials and self.authed_http:
+        #     self.credentials.revoke(http=self.authed_http)
 
     def login(self):
         # code liberated from https://cloud.google.com/appengine/docs/python/endpoints/access_from_python
@@ -45,8 +47,8 @@ class GfitAPI(object):
             flags = parser.parse_args()
             self.credentials = tools.run_flow(flow, storage, flags)
 
-        http = self.credentials.authorize(httplib2.Http())
-        self.api = build('fitness', 'v1', http=http)
+        self.authed_http = self.credentials.authorize(httplib2.Http())
+        self.api = build('fitness', 'v1', http=self.authed_http)
 
 
     def _get_fit_data(self, data_source, data_type):
@@ -91,9 +93,15 @@ class GfitAPI(object):
     def preprocess_data(self, data, data_type):
         global_start = datetime.fromtimestamp(float(data['minStartTimeNs'])/1e9)
         global_end = datetime.fromtimestamp(float(data['maxEndTimeNs'])/1e9)
+
+        if 'point' in data:
+            points = [self.process_datapoint(point, data_type) for point in data['point']]
+        else:
+            points = []
+
         return {
             'times': DateRange(global_start, global_end),
-            'data': [self.process_datapoint(point, data_type) for point in data['point']]
+            'data': points
         }
 
 
