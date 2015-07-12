@@ -19,10 +19,15 @@ class PyTest(TestCommand):
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
+        # not entirely sure what these do - pretty sure they related to TestCommand - if I have them
+        # earlier setuptools freaks out, if I don't have them run_tests never gets called. ugh.
+        self.test_args = []
+        self.test_suite = True
 
     def run_tests(self):
         #import here, cause outside pytest might not be installed if we're not planning on running tests
         import pytest, sys
+
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
@@ -55,8 +60,8 @@ setup(
         'google-api-python-client>=1.4.0',
         'oauth2client>=1.4.6',
         'httplib2>=0.9.1',
-        'enum34',
-        'arrow'
+        'enum34>=1.0.4',
+        'arrow>=0.6.0'
     ],
     tests_require=[
         'pytest',
