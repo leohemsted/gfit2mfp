@@ -69,7 +69,7 @@ class DateRange(object):
         trimmed_duration = datetime.timedelta(seconds=int(self.duration.total_seconds()))
         return 'DateRange s={0} d={1}'.format(self.start, trimmed_duration)
 
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         return '{cls}(start={s!r}, end={e!r})'.format(
             cls=self.__class__.__name__,
             s=self.start,

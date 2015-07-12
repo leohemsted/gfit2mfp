@@ -6,6 +6,6 @@ install:
   - pip install -e .
   - pip install coveralls
 script:
-  - python setup.py test -a "--cov gfit2mfp --rcfile=setup.cfg"
+  - python setup.py test -a "--cov gfit2mfp"
 after_success:
     coveralls
