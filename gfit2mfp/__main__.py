@@ -2,12 +2,13 @@ import logging
 import json
 from os.path import isfile
 
+from gfit2mfp import data_collection, data_manipulation, mfp_upload
+
 logging.basicConfig(
     format='%(levelname)s: %(message)s',
     level=logging.INFO
 )
 
-from gfit2mfp import data_collection, data_manipulation
 
 # test file to save hitting google each time
 cals = 'cal_data.json'
@@ -30,5 +31,8 @@ print(useful_stats)
 fitness_data = data_manipulation.combine_activities(cal_data, act_data)
 
 day_data = data_manipulation.get_daily_summary(fitness_data)
-import pdb
-pdb.set_trace()
+
+mfp = mfp_upload.MFP()
+
+mfp.authenticate()
+mfp.upload(day_data)

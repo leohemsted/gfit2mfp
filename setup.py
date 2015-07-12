@@ -19,15 +19,12 @@ class PyTest(TestCommand):
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
 
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
+        #import here, cause outside pytest might not be installed if we're not planning on running tests
         import pytest, sys
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
-
 
 setup(
     name='gfit2mfp',

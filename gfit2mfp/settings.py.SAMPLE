@@ -2,3 +2,9 @@ CLIENT_ID = ''
 CLIENT_SECRET = ''
 API_SCOPE = 'https://www.googleapis.com/auth/fitness.activity.read'
 
+MFP_USERNAME=''
+MFP_PASSWORD=''
+
+WALKING_TYPE=''
+RUNNING_TYPE=''
+CYCLING_TYPE=''
