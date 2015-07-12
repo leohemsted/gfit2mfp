@@ -27,6 +27,11 @@ class PyTest(TestCommand):
     def run_tests(self):
         #import here, cause outside pytest might not be installed if we're not planning on running tests
         import pytest, sys
+        # monkeypatch unittest for py2.7
+        if sys.version_info < (3, 0, 0):
+            import mock
+            import unittest
+            unittest.mock = mock
 
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
@@ -65,7 +70,8 @@ setup(
     ],
     tests_require=[
         'pytest',
-        'pytest-cov'
+        'pytest-cov',
+        'mock'
     ],
     cmdclass = {'test': PyTest},
 )
