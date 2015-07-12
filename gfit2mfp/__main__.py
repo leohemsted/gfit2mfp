@@ -2,7 +2,10 @@ import logging
 import json
 from os.path import isfile
 
-from gfit2mfp import data_collection, data_manipulation, mfp_upload
+from gfit2mfp import settings
+from gfit2mfp import data_collection
+from gfit2mfp import data_manipulation
+from gfit2mfp import mfp_upload
 
 logging.basicConfig(
     format='%(levelname)s: %(message)s',
@@ -32,7 +35,5 @@ fitness_data = data_manipulation.combine_activities(cal_data, act_data)
 
 day_data = data_manipulation.get_daily_summary(fitness_data)
 
-mfp = mfp_upload.MFP()
-
-mfp.authenticate()
-mfp.upload(day_data)
+with mfp_upload.MFP(settings.MFP_USERNAME, settings.MFP_PASSWORD) as mfp:
+    mfp.upload(day_data)

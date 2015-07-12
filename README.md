@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/leohemsted/gfit2mfp.svg?branch=master)](https://travis-ci.org/leohemsted/gfit2mfp) [![Coverage Status](https://coveralls.io/repos/leohemsted/gfit2mfp/badge.svg)](https://coveralls.io/r/leohemsted/gfit2mfp)
 
-gfit2mfp - Google Fit -> My Fitness Pal
+gfit2mfp = Google Fit -> My Fitness Pal
 =======================================
 
 takes excercise data from Google Fit and imports into My Fitness Pal
@@ -23,6 +23,9 @@ The important ones:
 Todo:
 =====
 
-Work out if there's a convenient way to get all activity - not just by device. what happens if i get a smart watch or brick my phone? Look at `derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments`
-
-match activity to calories before grouping the timesets - discard anything without an activity (though probably at least print out cals so I can see how much is there and work out if I want to do anything with it) - also sleepdroid reports my sleeping to google fit - creepy - probs don't want that popping up anywhere
+* Make sure login works
+* get posting of activities working
+* Figure out what exercise_id means in mfp
+* is regex the best way to get the csrf? it'll probably fall over if there's a weird line break or something. look into beautifulsoup
+* get list of activity IDs
+* make the type of activity configurable in the settings file

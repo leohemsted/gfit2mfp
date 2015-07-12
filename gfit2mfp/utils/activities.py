@@ -128,3 +128,14 @@ class Activity(Enum):
             Activity.walking,
             Activity.running,
         )
+
+    @property
+    def mfp_id(self):
+        if self == Activity.biking:
+            return 19
+        elif self == Activity.walking:
+            return 26688321
+        elif self == Activity.running:
+            return 132
+        else:
+            raise NotImplementedError('We do not know the myfitnesspal ID for {0}'.format(self))
