@@ -1,9 +1,4 @@
-import sys
-# monkeypatch unittest for py2.7
-if sys.version_info < (3, 0, 0):
-    from mock import Mock, patch, call
-else:
-    from unittest.mock import Mock, patch, call
+from unittest.mock import Mock, patch, call
 
 import pytest
 
