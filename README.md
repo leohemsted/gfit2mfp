@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/leohemsted/gfit2mfp.svg?branch=master)](https://travis-ci.org/leohemsted/gfit2mfp) [![Coverage Status](https://coveralls.io/repos/leohemsted/gfit2mfp/badge.svg)](https://coveralls.io/r/leohemsted/gfit2mfp)
+[![Build Status](https://travis-ci.org/leohemsted/gfit2mfp.svg?branch=master)](https://travis-ci.org/leohemsted/gfit2mfp)
+[![Coverage Status](https://coveralls.io/repos/leohemsted/gfit2mfp/badge.svg?branch=master&service=github)](https://coveralls.io/github/leohemsted/gfit2mfp?branch=master)
 
 gfit2mfp = Google Fit -> My Fitness Pal
 =======================================
