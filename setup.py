@@ -65,7 +65,8 @@ setup(
     ],
     tests_require=[
         'pytest',
-        'pytest-cov'
+        'pytest-cov',
+        'mock'
     ],
     cmdclass = {'test': PyTest},
 )
