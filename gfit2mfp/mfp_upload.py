@@ -70,7 +70,6 @@ class MFP(object):
             duration.seconds / 60
         )
         res = self.client.post(self.add_exercise_url, data=payload)
-        import pdb; pdb.set_trace()
 
         if re.search('Please correct the following errors', res.text):
             with open('error.html', 'w', encoding='utf-8') as err:

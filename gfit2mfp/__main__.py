@@ -1,9 +1,7 @@
 import logging
+from pprint import pprint
 
-from gfit2mfp import data_collection
-from gfit2mfp import data_manipulation
-from gfit2mfp import last_run
-from gfit2mfp import settings
+from gfit2mfp import data_collection, data_manipulation, mfp_upload, last_run, settings
 
 logging.basicConfig(
     format='%(levelname)s: %(message)s',
@@ -22,7 +20,7 @@ with gfit:
     act_data = gfit.get_activity_data()
 
 useful_stats = data_manipulation.summarise(cal_data)
-print(useful_stats)
+pprint(useful_stats)
 
 fitness_data = data_manipulation.combine_activities(cal_data, act_data)
 
@@ -30,5 +28,5 @@ day_data = data_manipulation.get_daily_summary(fitness_data)
 
 last_run.update_last_run()
 
-# with mfp_upload.MFP(settings.MFP_USERNAME, settings.MFP_PASSWORD) as mfp:
-#     mfp.upload(day_data)
+with mfp_upload.MFP(settings.MFP_USERNAME, settings.MFP_PASSWORD) as mfp:
+    mfp.upload(day_data)
