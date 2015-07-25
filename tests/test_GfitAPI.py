@@ -125,3 +125,28 @@ def test_credentials_are_not_touched_when_valid(Storage, refresh_creds):
     # refresh_credentials was not called
     assert refresh_creds.call_args_list == []
     assert ret == storage.get.return_value
+
+
+
+@patch('gfit2mfp.data_collection.argparse')
+@patch('gfit2mfp.data_collection.tools')
+@patch('gfit2mfp.data_collection.OAuth2WebServerFlow')
+@patch('gfit2mfp.data_collection.API_SCOPE')
+def test_refresh_credentials_creates_flow(api_scope, oauth, tools, argparse):
+    client_id = Mock()
+    client_secret = Mock()
+    GfitAPI(client_id, client_secret, Mock()).refresh_credentials(Mock())
+
+    assert oauth.call_args_list == [call(client_id, client_secret, api_scope)]
+
+@patch('gfit2mfp.data_collection.argparse')
+@patch('gfit2mfp.data_collection.tools')
+@patch('gfit2mfp.data_collection.OAuth2WebServerFlow')
+@patch('gfit2mfp.data_collection.API_SCOPE')
+def test_refresh_credentials_runs_flow(api_scope, oauth, tools, argparse):
+    storage = Mock()
+    flags = argparse.ArgumentParser.return_value.parse_args.return_value
+
+    GfitAPI(Mock(), Mock(), Mock()).refresh_credentials(storage)
+
+    assert tools.run_flow.call_args_list == [call(oauth.return_value, storage, flags)]
