@@ -27,25 +27,32 @@ class GfitAPI(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         pass
-        # not sure if I ever want to revoke - i might re-add this later?
+        # # revoking code:
         # if self.credentials and self.authed_http:
         #     self.credentials.revoke(http=self.authed_http)
 
+    def get_credentials(self):
+        storage = Storage('user_credentials')
+
+        cred = storage.get()
+        if cred is None or cred.invalid:
+            cred = self.refresh_credentials(storage)
+        return cred
+
+    def refresh_credentials(self, storage):
+        flow = OAuth2WebServerFlow(
+            self.client_id,
+            self.client_secret,
+            API_SCOPE
+        )
+        # google requires me to give an argparser for flags, although I know i'll be passing none in
+        parser = argparse.ArgumentParser(parents=[tools.argparser])
+        flags = parser.parse_args()
+        return tools.run_flow(flow, storage, flags)
+
     def login(self):
         # code liberated from https://cloud.google.com/appengine/docs/python/endpoints/access_from_python
-        storage = Storage('user_credentials')
-        self.credentials = storage.get()
-
-        if self.credentials is None or self.credentials.invalid:
-            flow = OAuth2WebServerFlow(
-                self.client_id,
-                self.client_secret,
-                API_SCOPE
-            )
-            # google requires me to give an argparser for flags, although I know i'll be passing none in
-            parser = argparse.ArgumentParser(parents=[tools.argparser])
-            flags = parser.parse_args()
-            self.credentials = tools.run_flow(flow, storage, flags)
+        self.credentials = self.get_credentials()
 
         self.authed_http = self.credentials.authorize(httplib2.Http())
         self.api = build('fitness', 'v1', http=self.authed_http)
