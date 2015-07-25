@@ -20,7 +20,6 @@ The important ones:
 | Walking |    7     |
 | Cycling |    1     |
 | unknown |    4     |
-|---------|----------|
 
 Todo:
 =====
