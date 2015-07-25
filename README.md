@@ -14,6 +14,7 @@ notes to self:
 
 The important ones:
 
+| Type | Enum Val |
 ---------------
 | Running | 8 |
 | Walking | 7 |
