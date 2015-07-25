@@ -14,13 +14,14 @@ notes to self:
 
 The important ones:
 
-| Type | Enum Val |
----------------
-| Running | 8 |
-| Walking | 7 |
-| Cycling | 1 |
-| unknown | 4 |
----------------
+|---------|----------|
+| Type    | Enum Val |
+|---------|----------|
+| Running |    8     |
+| Walking |    7     |
+| Cycling |    1     |
+| unknown |    4     |
+|---------|----------|
 
 Todo:
 =====
